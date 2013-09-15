@@ -125,6 +125,12 @@ unsigned int _GRAYINTtoINT_fastest(unsigned int inta){
 	return inta;
 
 }
+
+
+bool GRAY_INT::GetBitAt(int bit){
+	return (value >> bit) & 1;
+}
+
 int GRAY_INT::_GetBit(const char* data){
 	unsigned int ans = 0;
 	int i = 0;
@@ -238,7 +244,9 @@ const char* GRAY_INT::ShowBit()const{
 GRAY_INT::operator int(){
 	return value;//GRAYINTtoINT(value);
 }
-
+GRAY_INT::operator bool(){
+	return (value != 0);
+}
 
 GRAY_INT& GRAY_INT::operator++(){
 	if (_GetBit_Mod2(value)){
@@ -324,6 +332,18 @@ bool GRAY_INT::operator!=(const GRAY_INT& a)const{
 bool GRAY_INT::operator!=(int a){
 	return (value != a);
 }
+bool GRAY_INT::operator||(const GRAY_INT& a)const{
+	return (value || a.GetValueGray());
+}
+bool GRAY_INT::operator||(bool a){
+	return (value || a);
+}
+bool GRAY_INT::operator&&(const GRAY_INT& a)const{
+	return (value && a.GetValueGray());
+}
+bool GRAY_INT::operator&&(bool a){
+	return (value && a);
+}
 
 
 
@@ -401,7 +421,7 @@ GRAY_INT Addition2(const GRAY_INT a, const GRAY_INT b){
 	return target;
 }
 
-//noway
+//never-ending
 GRAY_INT Addition4(const GRAY_INT a, const GRAY_INT b){
 
 	GRAY_INT tmpa = a;
@@ -426,9 +446,68 @@ GRAY_INT Addition5(const GRAY_INT a, const GRAY_INT b){
 	return (tmpa != 0) ? tmpa : tmpb;
 }
 
+
+GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
+	GRAY_INT val[2] = { a, b };
+	bool vbit[2] = { 0, 0 };
+	bool prevbit = 0;
+	int prebit;// std::numeric_limits<int>::digits;
+	GRAY_INT ans = 0;
+
+	for (int bit = std::numeric_limits<int>::digits-1; bit >= 0; bit--){
+		if (val[0].GetBitAt(bit)&&val[1].GetBitAt(bit)&&(vbit[0] != vbit[1])){
+				vbit[0] = !vbit[0]; vbit[1] = !vbit[1];
+		}
+		else{
+			if (val[0].GetBitAt(bit)) {
+				ans.FlipBitAt(bit); 
+				if (prevbit == (vbit[0] = !vbit[0])){
+					ans.FlipBitAt(prebit + 1);
+				}
+				prevbit = vbit[0];
+				prebit = bit;
+			}
+			if (val[1].GetBitAt(bit)) {
+				ans.FlipBitAt(bit); 
+				if (prevbit == (vbit[1] = !vbit[1])){
+					ans.FlipBitAt(prebit + 1);
+				}
+				prevbit = vbit[1];
+				prebit = bit;
+			}
+		}
+	}
+	
+	
+	if ((vbit[0] || vbit[1])& !prevbit){
+		ans.FlipBitAt(prebit + 1);	
+	}
+	else if(vbit[0] && vbit[1]){
+		ans.FlipBitAt(0);
+	}
+	
+
+	return ans;
+
+}
+
 GRAY_INT& GRAY_INT::twice(){
 	value <<= 1;
 	value &= _GetBit_Mod2(value);
 	return *this;
 
+}
+
+
+GRAY_INT& GRAY_INT::SetBitAt(int bit){
+	if (bit > 0)value |= (1 << bit);
+	return *this;
+}
+GRAY_INT& GRAY_INT::FlipBitAt(int bit){
+	if (bit > 0)value ^= (1 << bit);
+	return *this;
+}
+GRAY_INT& GRAY_INT::ResetBitAt(int bit){
+	if (bit > 0)value &= !(1 << bit);
+	return *this;
 }

@@ -49,6 +49,10 @@ public:
 	bool operator==(int a);
 	bool operator!=(const GRAY_INT& a)const;
 	bool operator!=(int a);
+	bool operator||(const GRAY_INT& a)const;
+	bool operator||(bool a);
+	bool operator&&(const GRAY_INT& a)const;
+	bool operator&&(bool a);
 #if _CALC_IN_GRAYCODE
 	GRAY_INT operator+(int a);
 	GRAY_INT operator+(GRAY_INT a);
@@ -58,6 +62,7 @@ public:
 	template<typename T>
 	operator T(){ return static_cast<T>((int)*this); };
 	operator int();
+	operator bool();
 	operator GRAY_INT();
 	int GetValueGray()const;
 	int GetValueInt()const;
@@ -68,6 +73,10 @@ public:
 	GRAY_INT(const GRAY_INT& a);
 	GRAY_INT& SetBit(const char* data);
 	GRAY_INT& twice();
+	bool GetBitAt(int bit);
+	GRAY_INT& SetBitAt(int bit);
+	GRAY_INT& FlipBitAt(int bit);
+	GRAY_INT& ResetBitAt(int bit);
 private:
 	unsigned int value;
 	int _GetBit(const char* data);
