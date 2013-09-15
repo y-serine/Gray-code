@@ -402,6 +402,7 @@ GRAY_INT Addition1s(const GRAY_INT a, const GRAY_INT b){
 	return (GRAY_INT)(INTtoGRAYINT(a1));
 }
 
+//ten times slower
 GRAY_INT Addition2(const GRAY_INT a, const GRAY_INT b){
 	unsigned int bi = b.GetValueInt();
 	unsigned int shifted = std::numeric_limits<unsigned int>::digits;
@@ -421,22 +422,6 @@ GRAY_INT Addition2(const GRAY_INT a, const GRAY_INT b){
 	return target;
 }
 
-//never-ending
-GRAY_INT Addition4(const GRAY_INT a, const GRAY_INT b){
-
-	GRAY_INT tmpa = a;
-	GRAY_INT tmpb = b;
-	GRAY_INT prea = a;
-	GRAY_INT preb = b;
-	if (a == b)return tmpa.twice();
-	while (tmpa != 0 || tmpb != 0){
-		prea = tmpa;
-		preb = tmpb;
-		tmpa = prea^preb^((prea | preb) >> 1);
-		tmpb = (prea&preb)^((prea&preb) << 1);
-	}
-	return (tmpa != 0) ? tmpa : tmpb;
-}
 
 GRAY_INT Addition5(const GRAY_INT a, const GRAY_INT b){
 
@@ -446,12 +431,12 @@ GRAY_INT Addition5(const GRAY_INT a, const GRAY_INT b){
 	return (tmpa != 0) ? tmpa : tmpb;
 }
 
-
+//ten times slower
 GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 	GRAY_INT val[2] = { a, b };
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit;// std::numeric_limits<int>::digits;
+	int prebit;
 	GRAY_INT ans = 0;
 
 	for (int bit = std::numeric_limits<int>::digits-1; bit >= 0; bit--){
@@ -500,14 +485,14 @@ GRAY_INT& GRAY_INT::twice(){
 
 
 GRAY_INT& GRAY_INT::SetBitAt(int bit){
-	if (bit > 0)value |= (1 << bit);
+	value |= (1 << bit);
 	return *this;
 }
 GRAY_INT& GRAY_INT::FlipBitAt(int bit){
-	if (bit > 0)value ^= (1 << bit);
+	value ^= (1 << bit);
 	return *this;
 }
 GRAY_INT& GRAY_INT::ResetBitAt(int bit){
-	if (bit > 0)value &= !(1 << bit);
+	value &= !(1 << bit);
 	return *this;
 }
