@@ -1,9 +1,9 @@
 ////  References  ////////////////////////////////////////////////////////
-//																		//
-//http://www.i.h.kyoto-u.ac.jp/~tsuiki/bit/gray.html					//
-//http://www.i.h.kyoto-u.ac.jp/~tsuiki/sojinbot.pdf						//
-//http://www.hiramine.com/programming/c_cpp/operator.html				//
-//																		//
+//                                                                      //
+//http://www.i.h.kyoto-u.ac.jp/~tsuiki/bit/gray.html                    //
+//http://www.i.h.kyoto-u.ac.jp/~tsuiki/sojinbot.pdf                     //
+//http://www.hiramine.com/programming/c_cpp/operator.html               //
+//                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
 
