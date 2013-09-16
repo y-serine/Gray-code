@@ -436,7 +436,7 @@ GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 	GRAY_INT val[2] = { a, b };
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit;
+	int prebit = std::numeric_limits<int>::digits-2;
 	GRAY_INT ans = 0;
 
 	for (int bit = std::numeric_limits<int>::digits-1; bit >= 0; bit--){
@@ -475,6 +475,17 @@ GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 	return ans;
 
 }
+GRAY_INT Multiplication1(const GRAY_INT a, const GRAY_INT b){
+	return (GRAY_INT)(INTtoGRAYINT(a.GetValueInt() * b.GetValueInt()));
+}
+GRAY_INT Subtraction1(const GRAY_INT a, const GRAY_INT b){
+	return (GRAY_INT)(INTtoGRAYINT(a.GetValueInt() - b.GetValueInt()));
+}
+
+GRAY_INT Subtraction6(const GRAY_INT a, const GRAY_INT b) {
+	return Addition6(a,-b);
+}
+
 
 GRAY_INT& GRAY_INT::twice(){
 	value <<= 1;
