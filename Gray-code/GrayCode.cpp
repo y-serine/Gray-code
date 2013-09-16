@@ -394,6 +394,7 @@ GRAY_INT::GRAY_INT(const GRAY_INT& a){ value = a.GetValueGray(); };
 GRAY_INT Addition1(const GRAY_INT a, const GRAY_INT b){
 	return (GRAY_INT)(INTtoGRAYINT(a.GetValueInt() + b.GetValueInt()));
 }
+// 12 times slower than the int addition.
 GRAY_INT Addition1s(const GRAY_INT a, const GRAY_INT b){
 	unsigned int a1 = a.GetValueInt();
 	unsigned int a2 = b.GetValueInt();
@@ -439,16 +440,16 @@ GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 	GRAY_INT val[2] = { a, b };
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<int>::digits-2;
+	int prebit = std::numeric_limits<int>::digits - 2;
 	GRAY_INT ans = 0;
 
-	for (int bit = std::numeric_limits<int>::digits-1; bit >= 0; bit--){
+	for (int bit = std::numeric_limits<int>::digits - 1; bit >= 0; bit--){
 		if (val[0].GetBitAt(bit)&&val[1].GetBitAt(bit)&&(vbit[0] != vbit[1])){
-				vbit[0] = !vbit[0]; vbit[1] = !vbit[1];
+			vbit[0] = !vbit[0]; vbit[1] = !vbit[1];
 		}
 		else{
 			if (val[0].GetBitAt(bit)) {
-				ans.FlipBitAt(bit); 
+				ans.FlipBitAt(bit);
 				if (prevbit == (vbit[0] = !vbit[0])){
 					ans.FlipBitAt(prebit + 1);
 				}
@@ -456,7 +457,7 @@ GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 				prebit = bit;
 			}
 			if (val[1].GetBitAt(bit)) {
-				ans.FlipBitAt(bit); 
+				ans.FlipBitAt(bit);
 				if (prevbit == (vbit[1] = !vbit[1])){
 					ans.FlipBitAt(prebit + 1);
 				}
@@ -465,15 +466,15 @@ GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 			}
 		}
 	}
-	
-	
+
+
 	if ((vbit[0] || vbit[1])& !prevbit){
-		ans.FlipBitAt(prebit + 1);	
+		ans.FlipBitAt(prebit + 1);
 	}
-	else if(vbit[0] && vbit[1]){
+	else if (vbit[0] && vbit[1]){
 		ans.FlipBitAt(0);
 	}
-	
+
 
 	return ans;
 
@@ -483,27 +484,27 @@ GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 
 // 8.5 times slower
 GRAY_INT Addition7(const GRAY_INT a, const GRAY_INT b){
-	
+
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<int>::digits-2;
+	int prebit = std::numeric_limits<int>::digits - 2;
 	GRAY_INT ans = a^b;
-	
-	for (int bit = std::numeric_limits<int>::digits-1; bit >= 0; bit--){
-		
-		
+
+	for (int bit = std::numeric_limits<int>::digits - 1; bit >= 0; bit--){
+
+
 		if (a.GetBitAt(bit)&&b.GetBitAt(bit)&&(vbit[0] != vbit[1])){
-				vbit[0] = !vbit[0]; vbit[1] = !vbit[1];
+			vbit[0] = !vbit[0]; vbit[1] = !vbit[1];
 		}
 		else{
-			if (a.GetBitAt(bit)) { 
+			if (a.GetBitAt(bit)) {
 				if (prevbit == (vbit[0] = !vbit[0])){
 					ans.FlipBitAt(prebit + 1);
 				}
 				prevbit = vbit[0];
 				prebit = bit;
 			}
-			if (b.GetBitAt(bit)) { 
+			if (b.GetBitAt(bit)) {
 				if (prevbit == (vbit[1] = !vbit[1])){
 					ans.FlipBitAt(prebit + 1);
 				}
@@ -512,27 +513,27 @@ GRAY_INT Addition7(const GRAY_INT a, const GRAY_INT b){
 			}
 		}
 	}
-	
-	
+
+
 	if ((vbit[0] || vbit[1])& !prevbit){
-		ans.FlipBitAt(prebit + 1);	
+		ans.FlipBitAt(prebit + 1);
 	}
-	else if(vbit[0] && vbit[1]){
+	else if (vbit[0] && vbit[1]){
 		ans.FlipBitAt(0);
 	}
-	
+
 	return ans;
 }
 
-//  6.5 times slower
+//  6.5 times slower than addition1/1s, 100 times slower than the int addition.
 GRAY_INT Addition8(const GRAY_INT a, const GRAY_INT b){
 	GRAY_INT val[2] = { a, b };
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<int>::digits-2;
+	int prebit = std::numeric_limits<int>::digits - 2;
 	GRAY_INT ans = a^b;
-	
-	for (int bit = std::numeric_limits<int>::digits-1; bit >= 0; bit--){
+
+	for (int bit = std::numeric_limits<int>::digits - 1; bit >= 0; bit--){
 		if (val[0].GetBitAt(bit)) {
 			vbit[0] = !vbit[0];
 			if (val[1].GetBitAt(bit)) {
@@ -551,26 +552,123 @@ GRAY_INT Addition8(const GRAY_INT a, const GRAY_INT b){
 				prebit = bit;
 			}
 		}
-		else {
-			if (val[1].GetBitAt(bit)) {
+		else if (val[1].GetBitAt(bit)) {
+			vbit[1] = !vbit[1];
+			if (prevbit == vbit[1]){
+				ans.FlipBitAt(prebit + 1);
+			}
+			prevbit = vbit[1];
+			prebit = bit;
+
+		}
+	}
+
+
+	if ((vbit[0] || vbit[1])& !prevbit){
+		ans.FlipBitAt(prebit + 1);
+	}
+	else if (vbit[0] && vbit[1]){
+		ans.FlipBitAt(0);
+	}
+
+	return ans;
+}
+
+//  as fast as addition1/1s, 10 times slower than the int addition.
+GRAY_INT Addition8u(const GRAY_INT a, const GRAY_INT b){
+	int val[2] = { a.GetValueGray(), b.GetValueGray() };
+	bool vbit[2] = { 0, 0 };
+	bool prevbit = 0;
+	int prebit = std::numeric_limits<int>::digits - 2;
+	unsigned ans = val[0] ^ val[1];
+
+	for (register int bit = std::numeric_limits<int>::digits - 1; bit >= 0; bit--){
+		if (val[0] & (1 << bit)) {
+			vbit[0] = !vbit[0];
+			if (val[1] & (1 << bit)) {
 				vbit[1] = !vbit[1];
-				if (prevbit == vbit[1]){
-					ans.FlipBitAt(prebit + 1);
+				if (vbit[0] == vbit[1]) {
+					ans ^= ((1 << bit) + 1);
+					prevbit = vbit[0];
+					prebit = bit;
 				}
-				prevbit = vbit[1];
+			}
+			else {
+				if (prevbit == vbit[0]){
+					ans ^= ((1 << prebit) + 1);
+				}
+				prevbit = vbit[0];
 				prebit = bit;
 			}
 		}
+		else if (val[1] & (1 << bit)) {
+			vbit[1] = !vbit[1];
+			if (prevbit == vbit[1]){
+				ans ^= ((1 << prebit) + 1);
+			}
+			prevbit = vbit[1];
+			prebit = bit;
+
+		}
 	}
-	
-	
+
+
 	if ((vbit[0] || vbit[1])& !prevbit){
-		ans.FlipBitAt(prebit + 1);	
+		ans ^= ((1 << prebit) + 1);
 	}
-	else if(vbit[0] && vbit[1]){
-		ans.FlipBitAt(0);
+	else if (vbit[0] && vbit[1]){
+		ans ^= 1;
 	}
-	
+
+	return (GRAY_INT)ans;
+}
+
+//this directly refers to the Gray coded value
+//fastest, 7 times slower than int addition
+unsigned Addition8ui(const unsigned a, const unsigned b){
+	bool vbit[2] = { 0, 0 };
+	bool prevbit = 0;
+	int prebit = std::numeric_limits<int>::digits - 2;
+	unsigned ans = a ^ b;
+
+	for (register int bit = std::numeric_limits<int>::digits - 1; bit >= 0; bit--){
+		if (a & (1 << bit)) {
+			vbit[0] = !vbit[0];
+			if (b & (1 << bit)) {
+				vbit[1] = !vbit[1];
+				if (vbit[0] == vbit[1]) {
+					ans ^= ((1 << bit) + 1);
+					prevbit = vbit[0];
+					prebit = bit;
+				}
+			}
+			else {
+				if (prevbit == vbit[0]){
+					ans ^= ((1 << prebit) + 1);
+				}
+				prevbit = vbit[0];
+				prebit = bit;
+			}
+		}
+		else if (b & (1 << bit)) {
+			vbit[1] = !vbit[1];
+			if (prevbit == vbit[1]){
+				ans ^= ((1 << prebit) + 1);
+			}
+			prevbit = vbit[1];
+			prebit = bit;
+
+		}
+	}
+
+
+	if ((vbit[0] || vbit[1])& !prevbit){
+		ans ^= ((1 << prebit) + 1);
+	}
+	else if (vbit[0] && vbit[1]){
+		ans ^= 1;
+	}
+
 	return ans;
 }
 
@@ -583,7 +681,7 @@ GRAY_INT Subtraction1(const GRAY_INT a, const GRAY_INT b){
 }
 
 GRAY_INT Subtraction6(const GRAY_INT a, const GRAY_INT b) {
-	return Addition6(a,-b);
+	return Addition6(a, -b);
 }
 
 
