@@ -130,6 +130,9 @@ unsigned int _GRAYINTtoINT_fastest(unsigned int inta){
 bool GRAY_INT::GetBitAt(int bit){
 	return (value >> bit) & 1;
 }
+bool GRAY_INT::GetBitAt(const int bit)const{
+	return (value >> bit) & 1;
+}
 
 int GRAY_INT::_GetBit(const char* data){
 	unsigned int ans = 0;
@@ -308,10 +311,10 @@ GRAY_INT& GRAY_INT::operator--(){
 	};
 	return *this;
 };
-GRAY_INT GRAY_INT::operator-(){
+GRAY_INT GRAY_INT::operator-()const{
 	return (++GRAY_INT((value ^ 0x80000000)));
 }
-GRAY_INT GRAY_INT::operator+(){
+GRAY_INT GRAY_INT::operator+()const{
 	return GRAY_INT((value));
 }
 GRAY_INT GRAY_INT::operator~(){
@@ -402,7 +405,7 @@ GRAY_INT Addition1s(const GRAY_INT a, const GRAY_INT b){
 	return (GRAY_INT)(INTtoGRAYINT(a1));
 }
 
-//ten times slower
+// 8.5 times slower
 GRAY_INT Addition2(const GRAY_INT a, const GRAY_INT b){
 	unsigned int bi = b.GetValueInt();
 	unsigned int shifted = std::numeric_limits<unsigned int>::digits;
@@ -478,7 +481,7 @@ GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 
 
 
-//slow
+// 8.5 times slower
 GRAY_INT Addition7(const GRAY_INT a, const GRAY_INT b){
 	
 	bool vbit[2] = { 0, 0 };
@@ -521,57 +524,43 @@ GRAY_INT Addition7(const GRAY_INT a, const GRAY_INT b){
 	return ans;
 }
 
-
-//slow
-GRAY_INT Addition7(const GRAY_INT a, const GRAY_INT b){
-	
+//  6.5 times slower
+GRAY_INT Addition8(const GRAY_INT a, const GRAY_INT b){
+	GRAY_INT val[2] = { a, b };
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
 	int prebit = std::numeric_limits<int>::digits-2;
 	GRAY_INT ans = a^b;
 	
 	for (int bit = std::numeric_limits<int>::digits-1; bit >= 0; bit--){
-		if (a.GetBitAt(bit)) {
+		if (val[0].GetBitAt(bit)) {
 			vbit[0] = !vbit[0];
-			prebit = bit;
-			if (b.GetBitAt(bit)) {
+			if (val[1].GetBitAt(bit)) {
 				vbit[1] = !vbit[1];
-				if (vbit[0]==vbit[1]) ans.FlipBitAt(bit+1);
+				if (vbit[0] == vbit[1]) {
+					ans.FlipBitAt(bit + 1);
+					prevbit = vbit[0];
+					prebit = bit;
+				}
 			}
 			else {
-			
-				
-			}
-		}
-		else {
-			if (b.GetBitAt(bit)) {
-				prebit = bit;
-				vbit[1] = !vbit[1];
-				
-				
-			}
-		}
-		/*
-		if (a.GetBitAt(bit)&&b.GetBitAt(bit)&&(vbit[0] != vbit[1])){
-				vbit[0] = !vbit[0]; vbit[1] = !vbit[1];
-		}
-		else{
-			if (a.GetBitAt(bit)) { 
-				if (prevbit == (vbit[0] = !vbit[0])){
+				if (prevbit == vbit[0]){
 					ans.FlipBitAt(prebit + 1);
 				}
 				prevbit = vbit[0];
 				prebit = bit;
 			}
-			if (b.GetBitAt(bit)) { 
-				if (prevbit == (vbit[1] = !vbit[1])){
+		}
+		else {
+			if (val[1].GetBitAt(bit)) {
+				vbit[1] = !vbit[1];
+				if (prevbit == vbit[1]){
 					ans.FlipBitAt(prebit + 1);
 				}
 				prevbit = vbit[1];
 				prebit = bit;
 			}
 		}
-		*/
 	}
 	
 	

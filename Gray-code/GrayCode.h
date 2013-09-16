@@ -40,8 +40,8 @@ public:
 	GRAY_INT operator++(int);
 	GRAY_INT& operator--();
 	GRAY_INT operator--(int);
-	GRAY_INT operator-();
-	GRAY_INT operator+();
+	GRAY_INT operator-()const;
+	GRAY_INT operator+()const;
 	GRAY_INT operator~();
 	bool operator!();
 	bool operator==(const GRAY_INT& a)const;
@@ -73,6 +73,7 @@ public:
 	GRAY_INT& SetBit(const char* data);
 	GRAY_INT& twice();
 	bool GetBitAt(int bit);
+	bool GetBitAt(const int bit)const;
 	GRAY_INT& SetBitAt(int bit);
 	GRAY_INT& FlipBitAt(int bit);
 	GRAY_INT& ResetBitAt(int bit);
