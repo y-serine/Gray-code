@@ -489,8 +489,6 @@ GRAY_INT Addition7(const GRAY_INT a, const GRAY_INT b){
 	for (int bit = std::numeric_limits<int>::digits-1; bit >= 0; bit--){
 		
 		
-		
-		
 		if (a.GetBitAt(bit)&&b.GetBitAt(bit)&&(vbit[0] != vbit[1])){
 				vbit[0] = !vbit[0]; vbit[1] = !vbit[1];
 		}
