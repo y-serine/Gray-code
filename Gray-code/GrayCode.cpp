@@ -475,6 +475,55 @@ GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 	return ans;
 
 }
+
+
+
+//slow
+GRAY_INT Addition7(const GRAY_INT a, const GRAY_INT b){
+	
+	bool vbit[2] = { 0, 0 };
+	bool prevbit = 0;
+	int prebit = std::numeric_limits<int>::digits-2;
+	GRAY_INT ans = a^b;
+	
+	for (int bit = std::numeric_limits<int>::digits-1; bit >= 0; bit--){
+		
+		
+		
+		
+		if (a.GetBitAt(bit)&&b.GetBitAt(bit)&&(vbit[0] != vbit[1])){
+				vbit[0] = !vbit[0]; vbit[1] = !vbit[1];
+		}
+		else{
+			if (a.GetBitAt(bit)) { 
+				if (prevbit == (vbit[0] = !vbit[0])){
+					ans.FlipBitAt(prebit + 1);
+				}
+				prevbit = vbit[0];
+				prebit = bit;
+			}
+			if (b.GetBitAt(bit)) { 
+				if (prevbit == (vbit[1] = !vbit[1])){
+					ans.FlipBitAt(prebit + 1);
+				}
+				prevbit = vbit[1];
+				prebit = bit;
+			}
+		}
+	}
+	
+	
+	if ((vbit[0] || vbit[1])& !prevbit){
+		ans.FlipBitAt(prebit + 1);	
+	}
+	else if(vbit[0] && vbit[1]){
+		ans.FlipBitAt(0);
+	}
+	
+	return ans;
+}
+
+
 GRAY_INT Multiplication1(const GRAY_INT a, const GRAY_INT b){
 	return (GRAY_INT)(INTtoGRAYINT(a.GetValueInt() * b.GetValueInt()));
 }
