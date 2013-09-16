@@ -60,7 +60,7 @@ public:
 #endif
 	template<typename T>
 	operator T(){ return static_cast<T>((int)*this); };
-	operator int();
+	operator unsigned();
 	operator bool();
 	operator GRAY_INT();
 	int GetValueGray()const;

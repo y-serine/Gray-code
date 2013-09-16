@@ -244,8 +244,8 @@ const char* GRAY_INT::ShowBit()const{
 };
 
 
-GRAY_INT::operator int(){
-	return value;//GRAYINTtoINT(value);
+GRAY_INT::operator unsigned(){
+	return value;
 }
 GRAY_INT::operator bool(){
 	return (value != 0);
@@ -576,7 +576,7 @@ GRAY_INT Addition8(const GRAY_INT a, const GRAY_INT b){
 
 //  as fast as addition1/1s, 10 times slower than the int addition.
 GRAY_INT Addition8u(const GRAY_INT a, const GRAY_INT b){
-	int val[2] = { a.GetValueGray(), b.GetValueGray() };
+	unsigned val[2] = { a.GetValueGray(), b.GetValueGray() };
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
 	int prebit = std::numeric_limits<int>::digits - 2;
@@ -588,14 +588,14 @@ GRAY_INT Addition8u(const GRAY_INT a, const GRAY_INT b){
 			if (val[1] & (1 << bit)) {
 				vbit[1] = !vbit[1];
 				if (vbit[0] == vbit[1]) {
-					ans ^= ((1 << bit) + 1);
+					ans ^= 1 << (bit + 1);
 					prevbit = vbit[0];
 					prebit = bit;
 				}
 			}
 			else {
 				if (prevbit == vbit[0]){
-					ans ^= ((1 << prebit) + 1);
+					ans ^= 1 << (prebit + 1);
 				}
 				prevbit = vbit[0];
 				prebit = bit;
@@ -604,7 +604,7 @@ GRAY_INT Addition8u(const GRAY_INT a, const GRAY_INT b){
 		else if (val[1] & (1 << bit)) {
 			vbit[1] = !vbit[1];
 			if (prevbit == vbit[1]){
-				ans ^= ((1 << prebit) + 1);
+				ans ^= 1 << (prebit + 1);
 			}
 			prevbit = vbit[1];
 			prebit = bit;
@@ -614,13 +614,13 @@ GRAY_INT Addition8u(const GRAY_INT a, const GRAY_INT b){
 
 
 	if ((vbit[0] || vbit[1])& !prevbit){
-		ans ^= ((1 << prebit) + 1);
+		ans ^= 1 << (prebit + 1);
 	}
 	else if (vbit[0] && vbit[1]){
 		ans ^= 1;
 	}
 
-	return (GRAY_INT)ans;
+	return ans;
 }
 
 //this directly refers to the Gray coded value
@@ -637,14 +637,14 @@ unsigned Addition8ui(const unsigned a, const unsigned b){
 			if (b & (1 << bit)) {
 				vbit[1] = !vbit[1];
 				if (vbit[0] == vbit[1]) {
-					ans ^= ((1 << bit) + 1);
+					ans ^= 1 << (bit + 1);
 					prevbit = vbit[0];
 					prebit = bit;
 				}
 			}
 			else {
 				if (prevbit == vbit[0]){
-					ans ^= ((1 << prebit) + 1);
+					ans ^= 1 << (prebit + 1);
 				}
 				prevbit = vbit[0];
 				prebit = bit;
@@ -653,7 +653,7 @@ unsigned Addition8ui(const unsigned a, const unsigned b){
 		else if (b & (1 << bit)) {
 			vbit[1] = !vbit[1];
 			if (prevbit == vbit[1]){
-				ans ^= ((1 << prebit) + 1);
+				ans ^= 1 << (prebit + 1);
 			}
 			prevbit = vbit[1];
 			prebit = bit;
@@ -663,7 +663,7 @@ unsigned Addition8ui(const unsigned a, const unsigned b){
 
 
 	if ((vbit[0] || vbit[1])& !prevbit){
-		ans ^= ((1 << prebit) + 1);
+		ans ^= 1 << (prebit + 1);
 	}
 	else if (vbit[0] && vbit[1]){
 		ans ^= 1;
