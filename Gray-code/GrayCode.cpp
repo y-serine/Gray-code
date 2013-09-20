@@ -1,5 +1,8 @@
 #include "GrayCode.h"
 
+#ifndef _GRAY_INT_IS_SIGNED
+#define _GRAY_INT_IS_SIGNED
+#endif
 
 ////////////////////////////////////////////////////////
 #include<limits>
@@ -187,15 +190,10 @@ GRAY_INT GRAY_INT::operator&=(const GRAY_INT& a){
 	value &= a.GetValueGray();
 	return *this;
 };
-/*
 const GRAY_INT GRAY_INT::operator^(const unsigned int a)const{
 	return GRAY_INT(value^a);
 };
-*/
-GRAY_INT GRAY_INT::operator^(const unsigned int a){
-	return GRAY_INT(value^a);
-};
-GRAY_INT GRAY_INT::operator^(const GRAY_INT& a)const{
+const GRAY_INT GRAY_INT::operator^(const GRAY_INT& a)const{
 	return GRAY_INT(value^(a.GetValueGray()));
 };
 GRAY_INT GRAY_INT::operator^=(const unsigned int a){
@@ -359,17 +357,17 @@ bool GRAY_INT::operator&&(bool a){
 
 #if _CALC_IN_GRAYCODE
 
-GRAY_INT GRAY_INT::operator+(const unsigned a)const{
-#ifdef _gray_int_is_signed
-	bool vbit[2] = { a&(1 << std::numeric_limits<unsigned int>::digits -1), value&(1 << std::numeric_limits<unsigned int>::digits -1) };
+const GRAY_INT GRAY_INT::operator+(const unsigned a)const{
+#ifdef _GRAY_INT_IS_SIGNED
+	bool vbit[2] = { a & (1 << (std::numeric_limits<unsigned int>::digits - 1)), value & (1 << (std::numeric_limits<unsigned int>::digits - 1)) };
 #else
 	bool vbit[2] = { 0, 0 };
 #endif
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits -2;
-	unsigned ans = (a ^ value)&((unsigned)(-1) >> 1);
-#ifdef _gray_int_is_signed
-	for (register int bit = std::numeric_limits<unsigned int>::digits -2; bit >= 0; bit--){
+	int prebit = std::numeric_limits<unsigned int>::digits - 2;
+	unsigned ans = (a ^ value) & ((unsigned)(-1) >> 1);
+#ifdef _GRAY_INT_IS_SIGNED
+	for (register int bit = std::numeric_limits<unsigned int>::digits - 2; bit >= 0; bit--){
 #else
 	for (register int bit = std::numeric_limits<unsigned int>::digits -1; bit >= 0; bit--){
 #endif
@@ -411,25 +409,25 @@ GRAY_INT GRAY_INT::operator+(const unsigned a)const{
 	}
 
 	return ans;
-	//return (GRAY_INT)(INTtoGRAYINT(GRAYINTtoINT(value) + a));
 }
 
-GRAY_INT GRAY_INT::operator+(const GRAY_INT add)const{
-	const unsigned a = add.value;
-#ifdef _gray_int_is_signed
-	bool vbit[2] = { a&(1 << std::numeric_limits<unsigned int>::digits - 1), value&(1 << std::numeric_limits<unsigned int>::digits - 1) };
+
+
+const GRAY_INT GRAY_INT::operator+(const GRAY_INT add)const{
+#ifdef _GRAY_INT_IS_SIGNED
+	bool vbit[2] = { add.value&(1 << (std::numeric_limits<unsigned int>::digits - 1)), value&(1 << (std::numeric_limits<unsigned int>::digits - 1)) };
 #else
 	bool vbit[2] = { 0, 0 };
 #endif
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits - 2;
-	unsigned ans = (a ^ value)&((unsigned)(-1) >> 1);
-#ifdef _gray_int_is_signed
-	for (register int bit = std::numeric_limits<unsigned int>::digits - 2; bit >= 0; bit--){
+	int prebit = (std::numeric_limits<unsigned int>::digits - 2);
+	unsigned ans = (add.value ^ value)&((unsigned)(-1) >> 1);
+#ifdef _GRAY_INT_IS_SIGNED
+	for (register int bit = (std::numeric_limits<unsigned int>::digits - 2); bit >= 0; bit--){
 #else
-	for (register int bit = std::numeric_limits<unsigned int>::digits - 1; bit >= 0; bit--){
+	for (register int bit = (std::numeric_limits<unsigned int>::digits - 1); bit >= 0; bit--){
 #endif
-		if (a & unsigned(1 << bit)) {
+		if (add.value & unsigned(1 << bit)) {
 			vbit[0] = !vbit[0];
 			if (value & (1 << bit)) {
 				vbit[1] = !vbit[1];
@@ -472,68 +470,69 @@ GRAY_INT GRAY_INT::operator+(const GRAY_INT add)const{
 
 
 /*
-GRAY_INT GRAY_INT::operator+(GRAY_INT a){
-	//unsigned a = unsigned(add);
-#ifdef _gray_int_is_signed
-	bool vbit[2] = { a&(1 << std::numeric_limits<unsigned int>::digits -1), b&(1 << std::numeric_limits<unsigned int>::digits -1) };
+const GRAY_INT GRAY_INT::operator+(const GRAY_INT add)const{
+const unsigned a = add.value;
+const unsigned v = value;
+#ifdef _GRAY_INT_IS_SIGNED
+bool vbit[2] = { a&(1 << (std::numeric_limits<unsigned int>::digits - 1)), value&(1 << (std::numeric_limits<unsigned int>::digits - 1)) };
 #else
-	bool vbit[2] = { 0, 0 };
+bool vbit[2] = { 0, 0 };
 #endif
-	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits -2;
-	unsigned ans = (a ^ value)&((unsigned)(-1) >> 1);
-#ifdef _gray_int_is_signed
-	for (register int bit = std::numeric_limits<unsigned int>::digits -2; bit >= 0; bit--){
+bool prevbit = 0;
+int prebit = (std::numeric_limits<unsigned int>::digits - 2);
+unsigned ans = (a ^ value)&((unsigned)(-1) >> 1);
+#ifdef _GRAY_INT_IS_SIGNED
+for (register int bit = (std::numeric_limits<unsigned int>::digits - 2); bit >= 0; bit--){
 #else
-	for (register int bit = std::numeric_limits<unsigned int>::digits -1; bit >= 0; bit--){
+for (register int bit = (std::numeric_limits<unsigned int>::digits - 1); bit >= 0; bit--){
 #endif
-		if (a & unsigned(1 << bit)) {
-			vbit[0] = !vbit[0];
-			if (value & (1 << bit)) {
-				vbit[1] = !vbit[1];
-				if (vbit[0] == vbit[1]) {
-					ans ^= 1 << (bit + 1);
-					prevbit = vbit[0];
-					prebit = bit;
-				}
-			}
-			else {
-				if (prevbit == vbit[0]){
-					ans ^= 1 << (prebit + 1);
-				}
-				prevbit = vbit[0];
-				prebit = bit;
-			}
-		}
-		else if (value & (1 << bit)) {
-			vbit[1] = !vbit[1];
-			if (prevbit == vbit[1]){
-				ans ^= 1 << (prebit + 1);
-			}
-			prevbit = vbit[1];
-			prebit = bit;
+if (a & unsigned(1 << bit)) {
+vbit[0] = !vbit[0];
+if (value & (1 << bit)) {
+vbit[1] = !vbit[1];
+if (vbit[0] == vbit[1]) {
+ans ^= 1 << (bit + 1);
+prevbit = vbit[0];
+prebit = bit;
+}
+}
+else {
+if (prevbit == vbit[0]){
+ans ^= 1 << (prebit + 1);
+}
+prevbit = vbit[0];
+prebit = bit;
+}
+}
+else if (value & (1 << bit)) {
+vbit[1] = !vbit[1];
+if (prevbit == vbit[1]){
+ans ^= 1 << (prebit + 1);
+}
+prevbit = vbit[1];
+prebit = bit;
 
-		}
-	}
+}
+}
 
 
-	if ((vbit[0] || vbit[1])& !prevbit){
-		ans ^= 1 << (prebit + 1);
-	}
-	else if (vbit[0] && vbit[1]){
-		ans ^= 1;
-	}
+if ((vbit[0] || vbit[1])& !prevbit){
+ans ^= 1 << (prebit + 1);
+}
+else if (vbit[0] && vbit[1]){
+ans ^= 1;
+}
 
-	return ans;
-	//return (GRAY_INT)(INTtoGRAYINT(GRAYINTtoINT(value) + a.GetValueInt()));
+return ans;
 }
 */
-GRAY_INT GRAY_INT::operator-(int a){
-	return (GRAY_INT)(INTtoGRAYINT(GRAYINTtoINT(value) - a));
+const GRAY_INT GRAY_INT::operator-(const unsigned a)const{
+	return (-(GRAY_INT)a) + *this;
 }
-GRAY_INT GRAY_INT::operator-(GRAY_INT a){
-	return (GRAY_INT)(INTtoGRAYINT(GRAYINTtoINT(value) - a.GetValueInt()));
+const GRAY_INT GRAY_INT::operator-(const GRAY_INT a)const{
+	return (-a) + *this;
 }
+
 #endif
 
 int GRAY_INT::GetMaxBit(){
@@ -609,10 +608,10 @@ GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 	GRAY_INT val[2] = { a, b };
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits -1 - 2;
+	int prebit = std::numeric_limits<unsigned int>::digits - 1 - 2;
 	GRAY_INT ans = 0;
 
-	for (int bit = std::numeric_limits<unsigned int>::digits -2; bit >= 0; bit--){
+	for (int bit = std::numeric_limits<unsigned int>::digits - 2; bit >= 0; bit--){
 		if (val[0].GetBitAt(bit)&&val[1].GetBitAt(bit)&&(vbit[0] != vbit[1])){
 			vbit[0] = !vbit[0]; vbit[1] = !vbit[1];
 		}
@@ -656,10 +655,10 @@ GRAY_INT Addition7(const GRAY_INT a, const GRAY_INT b){
 
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits -2;
+	int prebit = std::numeric_limits<unsigned int>::digits - 2;
 	GRAY_INT ans = a ^ b;
 
-	for (int bit = std::numeric_limits<unsigned int>::digits -1; bit >= 0; bit--){
+	for (int bit = std::numeric_limits<unsigned int>::digits - 1; bit >= 0; bit--){
 
 
 		if (a.GetBitAt(bit)&&b.GetBitAt(bit)&&(vbit[0] != vbit[1])){
@@ -699,10 +698,10 @@ GRAY_INT Addition8(const GRAY_INT a, const GRAY_INT b){
 	GRAY_INT val[2] = { a, b };
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits -2;
+	int prebit = std::numeric_limits<unsigned int>::digits - 2;
 	GRAY_INT ans = a^b;
 
-	for (int bit = std::numeric_limits<unsigned int>::digits -1; bit >= 0; bit--){
+	for (int bit = std::numeric_limits<unsigned int>::digits - 1; bit >= 0; bit--){
 		if (val[0].GetBitAt(bit)) {
 			vbit[0] = !vbit[0];
 			if (val[1].GetBitAt(bit)) {
@@ -748,10 +747,10 @@ GRAY_INT Addition8u(const GRAY_INT a, const GRAY_INT b){
 	unsigned val[2] = { a.GetValueGray(), b.GetValueGray() };
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits -2;
+	int prebit = std::numeric_limits<unsigned int>::digits - 2;
 	unsigned ans = val[0] ^ val[1];
 
-	for (register int bit = std::numeric_limits<unsigned int>::digits -1; bit >= 0; bit--){
+	for (register int bit = std::numeric_limits<unsigned int>::digits - 1; bit >= 0; bit--){
 		if (val[0] & (1 << bit)) {
 			vbit[0] = !vbit[0];
 			if (val[1] & (1 << bit)) {
@@ -797,9 +796,9 @@ GRAY_INT Addition8u(const GRAY_INT a, const GRAY_INT b){
 unsigned Addition8ui(const unsigned a, const unsigned b){
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits -2;
+	int prebit = std::numeric_limits<unsigned int>::digits - 2;
 	unsigned ans = a ^ b;
-	for (register int bit = std::numeric_limits<unsigned int>::digits -1; bit >= 0; bit--){
+	for (register int bit = std::numeric_limits<unsigned int>::digits - 1; bit >= 0; bit--){
 		if (a & (1 << bit)) {
 			vbit[0] = !vbit[0];
 			if (b & (1 << bit)) {
@@ -845,16 +844,16 @@ unsigned Addition8ui(const unsigned a, const unsigned b){
 unsigned Addition8uis(const unsigned a, const unsigned b){
 	bool vbit[2] = { 0, 0 };
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits -2;
+	int prebit = std::numeric_limits<unsigned int>::digits - 2;
 	unsigned ans = a ^ b;
-	for (register int bit = std::numeric_limits<unsigned int>::digits -1; bit >= 0; bit--){
+	for (register int bit = std::numeric_limits<unsigned int>::digits - 1; bit >= 0; bit--){
 		if (a & (1 << bit)) {
 			vbit[0] = !vbit[0];
 			if (b & (1 << bit)) {
 				vbit[1] = !vbit[1];
 				if (vbit[0] == vbit[1]) {
-#ifdef _gray_int_is_signed
-					ans ^= 1 << ((std::numeric_limits<unsigned int>::digits -1 == bit) ? (std::numeric_limits<unsigned int>::digits -1) : (bit + 1));
+#ifdef _GRAY_INT_IS_SIGNED
+					ans ^= 1 << ((std::numeric_limits<unsigned int>::digits - 1 == bit) ? (std::numeric_limits<unsigned int>::digits - 1) : (bit + 1));
 #else
 					ans ^= 1 << (bit + 1);
 #endif
@@ -864,8 +863,8 @@ unsigned Addition8uis(const unsigned a, const unsigned b){
 			}
 			else {
 				if (prevbit == vbit[0]){
-#ifdef _gray_int_is_signed
-					ans ^= 1 << ((std::numeric_limits<unsigned int>::digits -1 == prebit) ? (std::numeric_limits<unsigned int>::digits -1) : (prebit + 1));
+#ifdef _GRAY_INT_IS_SIGNED
+					ans ^= 1 << ((std::numeric_limits<unsigned int>::digits - 1 == prebit) ? (std::numeric_limits<unsigned int>::digits - 1) : (prebit + 1));
 #else
 					ans ^= 1 << (prebit + 1);
 #endif
@@ -877,8 +876,8 @@ unsigned Addition8uis(const unsigned a, const unsigned b){
 		else if (b & (1 << bit)) {
 			vbit[1] = !vbit[1];
 			if (prevbit == vbit[1]){
-#ifdef _gray_int_is_signed
-				ans ^= 1 << ((std::numeric_limits<unsigned int>::digits -1 == prebit) ? (std::numeric_limits<unsigned int>::digits -1) : (prebit + 1));
+#ifdef _GRAY_INT_IS_SIGNED
+				ans ^= 1 << ((std::numeric_limits<unsigned int>::digits - 1 == prebit) ? (std::numeric_limits<unsigned int>::digits - 1) : (prebit + 1));
 #else
 				ans ^= 1 << (prebit + 1);
 #endif
@@ -901,18 +900,18 @@ unsigned Addition8uis(const unsigned a, const unsigned b){
 }
 
 unsigned Addition8uic(const unsigned a, const unsigned b){
-#ifdef _gray_int_is_signed
-	bool vbit[2] = { a&(1 << std::numeric_limits<unsigned int>::digits -1), b&(1 << std::numeric_limits<unsigned int>::digits -1) };
+#ifdef _GRAY_INT_IS_SIGNED
+	bool vbit[2] = { a&(1 << (std::numeric_limits<unsigned int>::digits - 1)), b&(1 << (std::numeric_limits<unsigned int>::digits - 1)) };
 #else
 	bool vbit[2] = { 0, 0 };
 #endif
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits -2;
+	int prebit = std::numeric_limits<unsigned int>::digits - 2;
 	unsigned ans = (a ^ b)&((unsigned)(-1) >> 1);
-#ifdef _gray_int_is_signed
-	for (register int bit = std::numeric_limits<unsigned int>::digits -2; bit >= 0; bit--){
+#ifdef _GRAY_INT_IS_SIGNED
+	for (register int bit = (std::numeric_limits<unsigned int>::digits - 2); bit >= 0; bit--){
 #else
-	for (register int bit = std::numeric_limits<unsigned int>::digits -1; bit >= 0; bit--){
+	for (register int bit = (std::numeric_limits<unsigned int>::digits - 1); bit >= 0; bit--){
 #endif
 		if (a & (1 << bit)) {
 			vbit[0] = !vbit[0];
@@ -959,18 +958,18 @@ GRAY_INT Multiplication1(const GRAY_INT a, const GRAY_INT b){
 	return (GRAY_INT)(INTtoGRAYINT(a.GetValueInt() * b.GetValueInt()));
 }
 unsigned Multiplication8f(const unsigned a, const unsigned b){
-#ifdef _gray_int_is_signed
-	bool vbit[2] = { a&(1 << std::numeric_limits<unsigned int>::digits -1), b&(1 << std::numeric_limits<unsigned int>::digits -1) };
+#ifdef _GRAY_INT_IS_SIGNED
+	bool vbit[2] = { a&(1 << (std::numeric_limits<unsigned int>::digits - 1)), b&(1 << (std::numeric_limits<unsigned int>::digits - 1)) };
 #else
 	bool vbit[2] = { 0, 0 };
 #endif
 	bool prevbit = 0;
-	int prebit = std::numeric_limits<unsigned int>::digits -2;
+	int prebit = std::numeric_limits<unsigned int>::digits - 2;
 	unsigned long ans = 0;
-#ifdef _gray_int_is_signed
-	for (register int bit = std::numeric_limits<unsigned int>::digits -2; bit >= 0; bit--){
+#ifdef _GRAY_INT_IS_SIGNED
+	for (register int bit = std::numeric_limits<unsigned int>::digits - 2; bit >= 0; bit--){
 #else
-	for (register int bit = std::numeric_limits<unsigned int>::digits -1; bit >= 0; bit--){
+	for (register int bit = std::numeric_limits<unsigned int>::digits - 1; bit >= 0; bit--){
 #endif
 		if (a & (1 << bit)) {
 			if (vbit[0] = !vbit[0]){

@@ -11,9 +11,6 @@
 #define _CALC_IN_GRAYCODE 1
 
 
-#ifndef _gray_int_is_signed
-#define _gray_int_is_signed
-#endif
 
 class GRAY_INT{
 
@@ -30,8 +27,7 @@ public:
 	GRAY_INT operator&=(const unsigned int a);
 	GRAY_INT operator&=(const GRAY_INT& a);
 	const GRAY_INT operator^(const unsigned int a)const;
-	GRAY_INT operator^(const unsigned int a);
-	GRAY_INT operator^(const GRAY_INT& a)const;
+	const GRAY_INT operator^(const GRAY_INT& a)const;
 	GRAY_INT operator^=(const unsigned int a);
 	GRAY_INT operator^=(const GRAY_INT& a);
 	const GRAY_INT operator|(const unsigned int a)const;
@@ -59,12 +55,10 @@ public:
 	bool operator&&(const GRAY_INT& a)const;
 	bool operator&&(bool a);
 #if _CALC_IN_GRAYCODE
-	GRAY_INT operator+(const unsigned a)const;
-	GRAY_INT operator+(const GRAY_INT a)const;
-	//unsigned operator+(const unsigned a)const;
-	//GRAY_INT operator+(GRAY_INT a);
-	GRAY_INT operator-(int a);
-	GRAY_INT operator-(GRAY_INT a);
+	const GRAY_INT operator+(const unsigned a)const;
+	const GRAY_INT operator+(const GRAY_INT a)const;
+	const GRAY_INT operator-(const unsigned a)const;
+	const GRAY_INT operator-(const GRAY_INT a)const;
 #endif
 	template<typename T>
 	operator T(){ return static_cast<T>((unsigned int)*this); };
