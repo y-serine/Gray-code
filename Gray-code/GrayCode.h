@@ -58,7 +58,12 @@ public:
 	const GRAY_INT operator+(const unsigned a)const;
 	const GRAY_INT operator+(const GRAY_INT a)const;
 	const GRAY_INT operator-(const unsigned a)const;
-	const GRAY_INT operator-(const GRAY_INT a)const;
+	const GRAY_INT operator-(const GRAY_INT a)const; 
+	const GRAY_INT operator*(const GRAY_INT a)const;
+	GRAY_INT operator+=(const unsigned a);
+	GRAY_INT operator+=(const GRAY_INT a);
+	GRAY_INT operator-=(const unsigned a);
+	GRAY_INT operator-=(const GRAY_INT a);
 #endif
 	template<typename T>
 	operator T(){ return static_cast<T>((unsigned int)*this); };
@@ -73,16 +78,16 @@ public:
 	GRAY_INT(int a, int);
 	GRAY_INT(const GRAY_INT& a);
 	GRAY_INT& SetBit(const char* data);
-	GRAY_INT& twice();
+private:
+	unsigned int value;
+	int _GetBit(const char* data);
+	int GetMaxBit();
 	bool GetBitAt(int bit);
 	bool GetBitAt(const int bit)const;
 	GRAY_INT& SetBitAt(int bit);
 	GRAY_INT& FlipBitAt(int bit);
 	GRAY_INT& ResetBitAt(int bit);
-private:
-	unsigned int value;
-	int _GetBit(const char* data);
-	int GetMaxBit();
+	GRAY_INT twice()const;
 protected:
 };
 GRAY_INT SetBit(const char* data);

@@ -180,42 +180,42 @@ const GRAY_INT GRAY_INT::operator&(const unsigned int a)const{
 	return GRAY_INT(value&a);
 };
 const GRAY_INT GRAY_INT::operator&(const GRAY_INT& a)const{
-	return GRAY_INT(value&(a.GetValueGray()));
+	return GRAY_INT(value&a.value);
 };
 GRAY_INT GRAY_INT::operator&=(const unsigned int a){
 	value &= a;
 	return *this;
 };
 GRAY_INT GRAY_INT::operator&=(const GRAY_INT& a){
-	value &= a.GetValueGray();
+	value &= a.value;
 	return *this;
 };
 const GRAY_INT GRAY_INT::operator^(const unsigned int a)const{
 	return GRAY_INT(value^a);
 };
 const GRAY_INT GRAY_INT::operator^(const GRAY_INT& a)const{
-	return GRAY_INT(value^(a.GetValueGray()));
+	return GRAY_INT(value^a.value);
 };
 GRAY_INT GRAY_INT::operator^=(const unsigned int a){
 	value ^= a;
 	return *this;
 };
 GRAY_INT GRAY_INT::operator^=(const GRAY_INT& a){
-	value &= a.GetValueGray();
+	value &= a.value;
 	return *this;
 };
 const GRAY_INT GRAY_INT::operator|(const unsigned int a)const{
 	return GRAY_INT(value | a);
 };
 const GRAY_INT GRAY_INT::operator|(const GRAY_INT& a)const{
-	return GRAY_INT(value | (a.GetValueGray()));
+	return GRAY_INT(value | a.value);
 };
 GRAY_INT GRAY_INT::operator|=(const unsigned int a){
 	value |= a;
 	return *this;
 };
 GRAY_INT GRAY_INT::operator|=(const GRAY_INT& a){
-	value |= a.GetValueGray();
+	value |= a.value;
 	return *this;
 };
 
@@ -264,7 +264,7 @@ GRAY_INT& GRAY_INT::operator++(){
 	return *this;
 };
 GRAY_INT GRAY_INT::operator++(int){
-	GRAY_INT ans = GRAY_INT(value, 0);
+	GRAY_INT ans = *this;
 	if (_GetBit_Mod2(value)){
 		unsigned int tmp = 1;
 		while (!(tmp&value)){
@@ -278,7 +278,7 @@ GRAY_INT GRAY_INT::operator++(int){
 	return ans;
 };
 GRAY_INT GRAY_INT::operator--(int){
-	GRAY_INT ans = GRAY_INT(value, 0);
+	GRAY_INT ans = *this;
 	if (_GetBit_Mod2(value)){
 		value ^= 1;
 	}
@@ -327,25 +327,25 @@ bool GRAY_INT::operator!(){
 	return !(value == 0);
 }
 bool GRAY_INT::operator==(const GRAY_INT& a)const{
-	return (value == a.GetValueGray());
+	return (value == a.value);
 }
 bool GRAY_INT::operator==(int a){
 	return (value == a);
 }
 bool GRAY_INT::operator!=(const GRAY_INT& a)const{
-	return (value != a.GetValueGray());
+	return (value != a.value);
 }
 bool GRAY_INT::operator!=(int a){
 	return (value != a);
 }
 bool GRAY_INT::operator||(const GRAY_INT& a)const{
-	return (value || a.GetValueGray());
+	return (value || a.value);
 }
 bool GRAY_INT::operator||(bool a){
 	return (value || a);
 }
 bool GRAY_INT::operator&&(const GRAY_INT& a)const{
-	return (value && a.GetValueGray());
+	return (value && a.value);
 }
 bool GRAY_INT::operator&&(bool a){
 	return (value && a);
@@ -467,71 +467,57 @@ const GRAY_INT GRAY_INT::operator+(const GRAY_INT add)const{
 	return ans;
 }
 
-
-
-/*
-const GRAY_INT GRAY_INT::operator+(const GRAY_INT add)const{
-const unsigned a = add.value;
-const unsigned v = value;
-#ifdef _GRAY_INT_IS_SIGNED
-bool vbit[2] = { a&(1 << (std::numeric_limits<unsigned int>::digits - 1)), value&(1 << (std::numeric_limits<unsigned int>::digits - 1)) };
-#else
-bool vbit[2] = { 0, 0 };
-#endif
-bool prevbit = 0;
-int prebit = (std::numeric_limits<unsigned int>::digits - 2);
-unsigned ans = (a ^ value)&((unsigned)(-1) >> 1);
-#ifdef _GRAY_INT_IS_SIGNED
-for (register int bit = (std::numeric_limits<unsigned int>::digits - 2); bit >= 0; bit--){
-#else
-for (register int bit = (std::numeric_limits<unsigned int>::digits - 1); bit >= 0; bit--){
-#endif
-if (a & unsigned(1 << bit)) {
-vbit[0] = !vbit[0];
-if (value & (1 << bit)) {
-vbit[1] = !vbit[1];
-if (vbit[0] == vbit[1]) {
-ans ^= 1 << (bit + 1);
-prevbit = vbit[0];
-prebit = bit;
-}
-}
-else {
-if (prevbit == vbit[0]){
-ans ^= 1 << (prebit + 1);
-}
-prevbit = vbit[0];
-prebit = bit;
-}
-}
-else if (value & (1 << bit)) {
-vbit[1] = !vbit[1];
-if (prevbit == vbit[1]){
-ans ^= 1 << (prebit + 1);
-}
-prevbit = vbit[1];
-prebit = bit;
-
-}
-}
-
-
-if ((vbit[0] || vbit[1])& !prevbit){
-ans ^= 1 << (prebit + 1);
-}
-else if (vbit[0] && vbit[1]){
-ans ^= 1;
-}
-
-return ans;
-}
-*/
 const GRAY_INT GRAY_INT::operator-(const unsigned a)const{
 	return (-(GRAY_INT)a) + *this;
 }
 const GRAY_INT GRAY_INT::operator-(const GRAY_INT a)const{
 	return (-a) + *this;
 }
+
+
+GRAY_INT GRAY_INT::operator+=(const unsigned a){
+	return (*this = *this + a);
+}
+GRAY_INT GRAY_INT::operator+=(const GRAY_INT a){
+	return (*this = *this + a);
+}
+GRAY_INT GRAY_INT::operator-=(const unsigned a){
+	return (*this = *this - a);
+}
+GRAY_INT GRAY_INT::operator-=(const GRAY_INT a){
+	return (*this = *this - a);
+}
+
+
+const GRAY_INT GRAY_INT::operator*(const GRAY_INT a)const{
+#ifdef _GRAY_INT_IS_SIGNED
+	bool vbit[2] = { value&(1 << (std::numeric_limits<unsigned int>::digits - 1)), a.value&(1 << (std::numeric_limits<unsigned int>::digits - 1)) };
+#else
+	bool vbit[2] = { 0, 0 };
+#endif
+	unsigned times = ((a.value << 1) | _GetBit_Mod2(a.value));
+	unsigned v = ((value << 1) | _GetBit_Mod2(value));
+	bool prevbit = 0;
+	int prebit = std::numeric_limits<unsigned int>::digits - 2;
+	GRAY_INT ans = 0;
+#ifdef _GRAY_INT_IS_SIGNED
+	for (register int bit = std::numeric_limits<unsigned int>::digits - 2; bit >= 0; bit--){
+#else
+	for (register int bit = std::numeric_limits<unsigned int>::digits - 1; bit >= 0; bit--){
+#endif
+		if (times & (1 << bit)) {
+			if (vbit[0] = !vbit[0]){
+				ans += v << (bit);
+			}
+			else{
+				ans -= v << (bit);
+			}
+		}
+	}
+	return ans >> (unsigned)1;
+
+}
+
 
 #endif
 
@@ -553,8 +539,7 @@ GRAY_INT SetBit(const char* a){ return _GetBit_g(a); };
 GRAY_INT::GRAY_INT(void){};
 GRAY_INT::GRAY_INT(int a){ value = a; };
 GRAY_INT::GRAY_INT(int a, int){ *this = a; };
-//GRAY_INT::GRAY_INT(GRAY_INT& a){value=a.GetValueGray();};
-GRAY_INT::GRAY_INT(const GRAY_INT& a){ value = a.GetValueGray(); };
+GRAY_INT::GRAY_INT(const GRAY_INT& a){ value = a.value; };
 
 
 
@@ -573,7 +558,7 @@ GRAY_INT Addition1s(const GRAY_INT a, const GRAY_INT b){
 	}
 	return (GRAY_INT)(INTtoGRAYINT(a1));
 }
-
+/*
 // 8.5 times slower
 GRAY_INT Addition2(const GRAY_INT a, const GRAY_INT b){
 	unsigned int bi = b.GetValueInt();
@@ -594,14 +579,6 @@ GRAY_INT Addition2(const GRAY_INT a, const GRAY_INT b){
 	return target;
 }
 
-
-GRAY_INT Addition5(const GRAY_INT a, const GRAY_INT b){
-
-	GRAY_INT tmpa = a;
-	GRAY_INT tmpb = b;
-	if (a == b)return tmpa.twice();
-	return (tmpa != 0) ? tmpa : tmpb;
-}
 
 //ten times slower
 GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
@@ -647,7 +624,6 @@ GRAY_INT Addition6(const GRAY_INT a, const GRAY_INT b){
 	return ans;
 
 }
-
 
 
 // 8.5 times slower
@@ -741,6 +717,7 @@ GRAY_INT Addition8(const GRAY_INT a, const GRAY_INT b){
 
 	return ans;
 }
+*/
 
 //  as fast as addition1/1s, 10 times slower than the int addition.
 GRAY_INT Addition8u(const GRAY_INT a, const GRAY_INT b){
@@ -983,20 +960,10 @@ unsigned Multiplication8f(const unsigned a, const unsigned b){
 	return ans;
 
 }
-GRAY_INT Subtraction1(const GRAY_INT a, const GRAY_INT b){
-	return (GRAY_INT)(INTtoGRAYINT(a.GetValueInt() - b.GetValueInt()));
-}
-
-GRAY_INT Subtraction6(const GRAY_INT a, const GRAY_INT b) {
-	return Addition6(a, -b);
-}
 
 
-GRAY_INT& GRAY_INT::twice(){
-	value <<= 1;
-	value &= _GetBit_Mod2(value);
-	return *this;
-
+GRAY_INT GRAY_INT::twice()const{
+	return ((value << 1) & _GetBit_Mod2(value));
 }
 
 
