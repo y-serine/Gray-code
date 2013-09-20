@@ -10,6 +10,11 @@
 #pragma once
 #define _CALC_IN_GRAYCODE 1
 
+
+#ifndef _gray_int_is_signed
+#define _gray_int_is_signed
+#endif
+
 class GRAY_INT{
 
 public:
@@ -17,25 +22,26 @@ public:
 	GRAY_INT& Int(int a);
 	template<typename T>
 	GRAY_INT& operator=(T a){ return(*this = (double)a); };
-	GRAY_INT& operator=(int a);
+	GRAY_INT& operator=(const unsigned int a);
 	GRAY_INT& operator=(double a);
 	GRAY_INT& operator=(GRAY_INT& a);
-	const GRAY_INT operator&(int a)const;
+	const GRAY_INT operator&(const unsigned int a)const;
 	const GRAY_INT operator&(const GRAY_INT& a)const;
-	GRAY_INT operator&=(int a);
+	GRAY_INT operator&=(const unsigned int a);
 	GRAY_INT operator&=(const GRAY_INT& a);
-	const GRAY_INT operator^(int a)const;
-	const GRAY_INT operator^(const GRAY_INT& a)const;
-	GRAY_INT operator^=(int a);
+	const GRAY_INT operator^(const unsigned int a)const;
+	GRAY_INT operator^(const unsigned int a);
+	GRAY_INT operator^(const GRAY_INT& a)const;
+	GRAY_INT operator^=(const unsigned int a);
 	GRAY_INT operator^=(const GRAY_INT& a);
-	const GRAY_INT operator|(int a)const;
+	const GRAY_INT operator|(const unsigned int a)const;
 	const GRAY_INT operator|(const GRAY_INT& a)const;
-	GRAY_INT operator|=(int a);
+	GRAY_INT operator|=(const unsigned int a);
 	GRAY_INT operator|=(const GRAY_INT& a);
-	const GRAY_INT operator<<(int a)const;
-	GRAY_INT operator<<=(int a);
-	const GRAY_INT operator>>(int a)const;
-	GRAY_INT operator>>=(int a);
+	const GRAY_INT operator<<(const unsigned int a)const;
+	GRAY_INT operator<<=(const unsigned int a);
+	const GRAY_INT operator>>(const unsigned int a)const;
+	GRAY_INT operator>>=(const unsigned int a);
 	GRAY_INT& operator++();
 	GRAY_INT operator++(int);
 	GRAY_INT& operator--();
@@ -53,13 +59,15 @@ public:
 	bool operator&&(const GRAY_INT& a)const;
 	bool operator&&(bool a);
 #if _CALC_IN_GRAYCODE
-	GRAY_INT operator+(int a);
-	GRAY_INT operator+(GRAY_INT a);
+	GRAY_INT operator+(const unsigned a)const;
+	GRAY_INT operator+(const GRAY_INT a)const;
+	//unsigned operator+(const unsigned a)const;
+	//GRAY_INT operator+(GRAY_INT a);
 	GRAY_INT operator-(int a);
 	GRAY_INT operator-(GRAY_INT a);
 #endif
 	template<typename T>
-	operator T(){ return static_cast<T>((int)*this); };
+	operator T(){ return static_cast<T>((unsigned int)*this); };
 	operator unsigned();
 	operator bool();
 	operator GRAY_INT();
